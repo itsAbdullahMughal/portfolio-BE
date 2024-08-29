@@ -5,11 +5,28 @@ const transporter = require("../../config/emailConfig");
 const userController_create = async (req, res) => {
   try {
     const otpExpiry = process.env.OTP_EXPIRY || "1";
+    console.log(req.body);
 
-    const { username, password, email } = req.body;
-    if (!username || !password || !email) {
-      return res.status(400).json({ message: "All fields are required" });
+    const { username, password, email, questions } = req.body;
+    const required = [];
+    if (!username) {
+      required.push("username");
     }
+    if (!password) {
+      required.push("password");
+    }
+    if (!email) {
+      required.push("email");
+    }
+    if (!questions || questions?.length === 0) {
+      required.push("questions");
+    }
+    if (required.length > 0) {
+      return res
+        .status(400)
+        .json({ message: `All fields are required: ${required.join(", ")}` });
+    }
+
     const user = await User.findOne({ email });
     if (user) {
       return res
@@ -28,6 +45,7 @@ const userController_create = async (req, res) => {
       password: hashedPassword,
       OTP: hashedOTP,
       OTP_expiry: Date.now() + otpExpiry * 60 * 1000,
+      questions,
     });
     const savedUser = await newUser.save();
 

@@ -1,5 +1,6 @@
 const User = require("../../models/User");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const userController_OTPLogin = async (req, res) => {
   try {
@@ -16,12 +17,12 @@ const userController_OTPLogin = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-    if (user.OTP_expiry < Date.now()) {
-      return res.status(400).json({ message: "OTP expired" });
-    }
     const isOTPValid = await bcrypt.compare(OTP, user.OTP);
     if (!isOTPValid) {
       return res.status(400).json({ message: "Invalid OTP" });
+    }
+    if (user.OTP_expiry < Date.now()) {
+      return res.status(400).json({ message: "OTP expired" });
     }
 
     const token = jwt.sign({ id: user._id }, jwtSecret, {

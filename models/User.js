@@ -14,13 +14,25 @@ const schema = new Schema({
     required: true,
   },
   OTP: {
-    type: Number,
+    type: String,
     required: true,
   },
   OTP_expiry: {
     type: Date,
     required: true,
   },
+  questions: [
+    {
+      question: {
+        type: String,
+        required: true,
+      },
+      answer: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 module.exports = model("User", schema);

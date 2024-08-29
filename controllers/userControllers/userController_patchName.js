@@ -4,7 +4,7 @@ const userController_patchName = async (req, res) => {
   try {
     const { username } = req.body;
     if (!username) {
-      return res.status(400).json({ message: "Username is required" });
+      return res.status(400).json({ message: "username is required" });
     }
     const updatedUser = await User.findByIdAndUpdate(
       req.user._id,

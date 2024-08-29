@@ -1,21 +1,32 @@
 const transporter = require("../../config/emailConfig");
 const User = require("../../models/User");
+const bcrypt = require("bcrypt");
 
 const userController_login = async (req, res) => {
   try {
     const otpExpiry = process.env.OTP_EXPIRY || "1";
 
-    const { username, password } = req.body;
-    if (!username || !password || !email) {
-      return res.status(400).json({ message: "All fields are required" });
+    const { email, password } = req.body;
+    const required = [];
+    if (!email) {
+      required.push("email");
+    }
+    if (!password) {
+      required.push("password");
+    }
+    if (required.length > 0) {
+      return res
+        .status(400)
+        .json({ message: `All fields are required: ${required.join(", ")}` });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const decryptedPassword = decryptPassword(user.password, passwordKey);
-    if (decryptedPassword !== password) {
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 

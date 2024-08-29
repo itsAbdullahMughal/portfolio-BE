@@ -3,10 +3,17 @@ const User = require("../../models/User");
 const userController_patchPassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    if (!oldPassword || !newPassword) {
+    const required = [];
+    if (!oldPassword) {
+      required.push("oldPassword");
+    }
+    if (!newPassword) {
+      required.push("newPassword");
+    }
+    if (required.length > 0) {
       return res
         .status(400)
-        .json({ message: "Old password and new password are required" });
+        .json({ message: `All fields are required: ${required.join(", ")}` });
     }
     const isMatch = await req.user.comparePassword(oldPassword);
 
