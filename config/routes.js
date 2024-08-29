@@ -1,3 +1,3 @@
 module.exports = (app) => {
-  app.use("/api", require("../routes/additionalRoutes"));
+  app.use("/api/user", require("../routes/user"));
 };

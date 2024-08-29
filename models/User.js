@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 
 const schema = new Schema({
-  name: {
+  username: {
     type: String,
     required: true,
   },
@@ -13,10 +13,14 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-  createdAt: {
+  OTP: {
+    type: Number,
+    required: true,
+  },
+  OTP_expiry: {
     type: Date,
-    default: Date.now,
+    required: true,
   },
 });
 
-module.exports = model("ExampleModal", schema);
+module.exports = model("User", schema);
