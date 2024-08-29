@@ -1,0 +1,4 @@
+node_modules
+.env
+todo.txt
+git_diff.txt
